@@ -1,10 +1,78 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://d.line-scdn.net/liff/1.0/sdk.js" defer="defer"></script>
-        <title>My LIFF app</title>
-    </head>
-    <body>
-        <h1>TEST</h1>
-        <a href="liff.html" onclick="this.href += '?_=' + new Date();">RELOAD</a>
-    </body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>My LIFF app</title>
+    <script src="3rdparty/vconsole.min.js"></script>
+    <script>var vConsole = new VConsole();</script>
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    a {
+        text-decoration: none;
+    }
+    button {
+        background-color: lightgray;
+        font-size: 150%;
+    }
+    #context {
+        word-wrap: break-word;
+    }
+
+    #url-container {
+        word-wrap: break-word;
+        font-size: 20%;
+    }
+</style>
+</head>
+
+<body>
+    <a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1555341907&redirect_uri=https://kazuki-ma.github.io/liff-study/liff.html&state=rand&nonce=xxx&scope=profile%20openid%20email">
+        <button>Login</button>
+    </a>
+
+    <a href="javascript:send()">
+        <button>Send Message</button>
+    </a>
+
+    <p id="context"></p>
+
+    <p id="url-container"><strong>URL:</strong><span id="url"></span></p>
+
+
+    <script>
+        function send() {
+            liff.sendMessages([
+                {
+                    type: 'text',
+                    text: 'Hello, World!'
+                }
+            ])
+                .then(() => {
+                    console.log('message sent');
+                })
+                .catch((err) => {
+                    console.log('error', err);
+                });
+        }
+        liff.init(
+            data => {
+                const userId = data.context.userId;
+                console.table(data.context);
+                document.querySelectorAll('#context')[0].innerText = 'JSON.stringify(data.context) = ' + JSON.stringify(data.context);
+            },
+            err => {
+                console.log(err);
+                document.querySelectorAll('#context')[0].innerText = err;
+            }
+        );
+
+        document.querySelectorAll('#url')[0].innerText = location + (location.hash ? '#' + location.hash : '');
+    </script>
+</body>
+
 </html>
